@@ -48,7 +48,7 @@ services:
       - "--providers.docker=true"
       - "--entrypoints.web.address=:80"
     ports:
-      - "80:80"       # Amazon Clone accessible via custom domain
+      - "80:80"       # App accessible via amazon.local
       - "8081:8080"   # Traefik dashboard
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
@@ -57,6 +57,7 @@ services:
 
 networks:
   web:
+
 
 
 
