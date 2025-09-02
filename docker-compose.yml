@@ -18,13 +18,15 @@
 #       npm run dev -- --host 0.0.0.0 --port 3000"
 
 
+version: "3.8"
+
 services:
   amazonclone:
     image: node:18
+    container_name: amazonclone
     working_dir: /app
     volumes:
       - ./:/app
-      - /app/node_modules
     command: sh -c "
       npm install --legacy-peer-deps --no-package-lock &&
       echo '📦 Checking for outdated packages...' &&
@@ -33,20 +35,30 @@ services:
       npm run dev -- --host 0.0.0.0 --port 3000"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.amazonclone.rule=Host(`localhost`)"
+      - "traefik.http.routers.amazonclone.rule=Host(`amazon.local`)"
       - "traefik.http.services.amazonclone.loadbalancer.server.port=3000"
+    networks:
+      - web
 
   traefik:
     image: traefik:v2.10
+    container_name: traefik
     command:
       - "--api.insecure=true"
       - "--providers.docker=true"
       - "--entrypoints.web.address=:80"
     ports:
-      - "80:80"        # App accessible on http://localhost
-      - "8081:8080"    # Traefik dashboard
+      - "80:80"       # Amazon Clone accessible via custom domain
+      - "8081:8080"   # Traefik dashboard
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    networks:
+      - web
+
+networks:
+  web:
+
+
 
 
 
