@@ -3,14 +3,17 @@ version: "3.8"
 services:
   web:
     image: node:18-alpine
-    container_name: amazon_clone_web
+    container_name: amazon-clone
     working_dir: /app
     volumes:
       - ./:/app
-      - /app/node_modules  # keeps node_modules inside container only
+      - /app/node_modules
     ports:
       - "3000:3000"
     command: sh -c "
       npm install --legacy-peer-deps --no-package-lock &&
+      echo '📦 Checking for outdated packages...' &&
       npm outdated || true &&
-      npm run dev -- --hostname 0.0.0.0 --port 3000"
+      echo '🚀 Starting dev server...' &&
+      npm run dev -- --hostname 0.0.0.0 --port 3000
+    "
