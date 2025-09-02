@@ -1,11 +1,13 @@
+version: "3.8"
+
 services:
   web:
     image: node:18
     working_dir: /app
     volumes:
       - ./:/app
-      - /app/node_modules   # keep node_modules in container only
-      - /app/package-lock.json   # override to container-only
+      - /app/node_modules
+      - ./package-lock.json:/app/package-lock.json
     ports:
       - "3000:3000"
-    command: sh -c "npm install --legacy-peer-deps && npm run dev"
+    command: sh -c "npm install --legacy-peer-deps && npm run dev -- --hostname 0.0.0.0 --port 3000"
